@@ -87,13 +87,15 @@ func (app Application) GetUtxo() interface{} {
 
 type BasicState struct {
 	Account string `json:"account"`
-	Amount  int64  `json:"coins"` // TODO: Should be corrected as Amount, not coins
+	Amount  string `json:"coins"` // Read from the genesis in text, convert to big Int.
 }
 
 // Use the Genesis block to initialze the system
 func (app Application) SetupState(stateBytes []byte) {
 	log.Debug("SetupState", "state", string(stateBytes))
 
+	// Note: The Genesis file will serialize to int64 if the amount is an integer, so to prevent this
+	// we stick the amount in as a string and convert directly to big.Int, because it is a very large number.
 	var base BasicState
 	des, _ := comm.Deserialize(stateBytes, &base)
 	state := des.(*BasicState)
@@ -109,7 +111,7 @@ func (app Application) SetupState(stateBytes []byte) {
 
 	// TODO: Should be more flexible to match genesis block
 	balance := data.Balance{
-		Amount: data.NewCoin(state.Amount, "OLT"),
+		Amount: data.NewCoinFromString(state.Amount, "OLT"),
 	}
 	buffer, _ := comm.Serialize(balance)
 

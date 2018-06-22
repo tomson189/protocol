@@ -29,6 +29,19 @@ var Currencies map[string]bool = map[string]bool{
 	"ETH": true,
 }
 
+func NewCoinFromString(amount string, currency string) Coin {
+	value := big.NewInt(0)
+	value.SetString(amount, 10)
+	coin := Coin{
+		Currency: currency,
+		Amount:   value,
+	}
+	if !coin.IsValid() {
+		log.Warn("Create Invalid Coin", "coin", coin)
+	}
+	return coin
+}
+
 func NewCoin(amount int64, currency string) Coin {
 	value := big.NewInt(amount)
 	coin := Coin{
@@ -113,6 +126,7 @@ func (coin Coin) Minus(value Coin) Coin {
 		Currency: coin.Currency,
 		Amount:   base.Sub(coin.Amount, value.Amount),
 	}
+	log.Debug("Minus", "base", base, "coin", coin, "value", value)
 	return result
 }
 
@@ -128,6 +142,7 @@ func (coin Coin) Plus(value Coin) Coin {
 		Currency: coin.Currency,
 		Amount:   base.Add(coin.Amount, value.Amount),
 	}
+	log.Debug("Plus", "base", base, "coin", coin, "value", value)
 	return result
 }
 
