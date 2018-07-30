@@ -68,7 +68,7 @@ then
 	echo "============================================================" >> $LOG/fullnode.log
 	echo "Starting Fullnode" >> $LOG/fullnode.log
 	echo "============================================================" >> $LOG/fullnode.log
-	fullnode node --node $nodeName \
+	fullnode node -d --node $nodeName \
 		--root $WORK/fullnode \
 		--app $appAddress \
 		--address $rpcAddress \
